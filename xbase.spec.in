@@ -1,0 +1,66 @@
+%define xbase_ver @VERSION@
+
+Summary: Xbase dBase database file library
+Name: xbase
+Provides: xbase-2.0
+Version: %{xbase_ver}
+Release: 1
+Source: xbase-@VERSION@.tar.gz
+Copyright: LGPL
+Group: Development/Libraries
+Packager: Derry Bryson <derry@techass.com>
+Vendor: Xbase Development Team (linux.techass.com/projects/xdb)
+
+%description
+Library for accessing dBase .dbf, .ndx, .dbt, and Clipper .ntx files.
+
+%package -n xbase-devel
+Version: %{xbase_ver}
+Summary: Xbase development package
+Group: Development/Libraries
+Provides: xbase-devel-2.0
+Requires: xbase-2.0
+
+%description -n xbase-devel
+Headers and such for compiling programs that use the Xbase library.
+
+%prep
+%setup
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=/usr --enable-static
+
+%build
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make DESTDIR=$RPM_BUILD_ROOT install
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files -n xbase
+/usr/bin/checkndx
+/usr/bin/copydbf
+/usr/bin/deletall
+/usr/bin/dumphdr
+/usr/bin/dumprecs
+/usr/bin/packdbf
+/usr/bin/reindex
+/usr/bin/undelall
+/usr/bin/zap
+/usr/bin/dbfutil1
+/usr/lib/libxbase.so
+/usr/lib/libxbase-2.0.so.*
+
+%doc NEWS README TODO AUTHORS COPYING ChangeLog
+
+%files -n xbase-devel
+/usr/include/xbase
+/usr/bin/xbase-config
+/usr/lib/libxbase.la
+/usr/lib/libxbase.a
+
+%doc docs/html docs/latex
